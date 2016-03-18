@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>WebSocker</title>
+  <style>
+    .client {
+      background: grey;
+      height: 10px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transform: translate(-50%, -50%);
+      width: 10px;
+    }
+    #ball {
+      background: blue;
+      border-radius: 50%;
+      height: 100px;
+      left: 0;
+      position: absolute;
+      top: 0;
+      transform: translate(-50%, -50%);
+      width: 100px;
+    }
+  </style>
+</head>
+<body>
+<div id="ball"></div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+(function () {
+  var socket = io();
+
+  document.addEventListener('mousemove', function (evt) {
+    socket.emit('move', {
+      x: evt.x,
+      y: evt.y
+    });
+  });
+
+  var clients = {};
+
+  function clientDiv(client) {
+    if (!clients[client.id]) {
+      clients[client.id] = document.createElement('div');
+      clients[client.id].classList.add('client');
+      document.body.appendChild(clients[client.id]);
+    }
+    return clients[client.id];
+  }
+
+  socket.on('new client', clientDiv);
+
+  socket.on('someone moved', function (client) {
+    var c = clientDiv(client);
+    c.style.left = client.x + 'px';
+    c.style.top = client.y + 'px';
+  });
+
+  socket.on('client left', function (client) {
+    document.body.removeChild(clients[client.id]);
+    delete clients[client.id];
+  });
+
+  var ballDiv = document.getElementById('ball');
+
+  socket.on('ball moved', function (ball) {
+    if (typeof ball.x === 'number' && typeof ball.y === 'number') {
+      ballDiv.style.left = ball.x + 'px';
+      ballDiv.style.top = ball.y + 'px';
+    }
+  });
+})();
+</script>
+</body>
+</html>

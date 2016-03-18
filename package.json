@@ -1,0 +1,15 @@
+{
+  "name": "web-socker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/davidvandusen/web-socker.git"
+  },
+  "author": "David VanDusen",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.13.4",
+    "socket.io": "^1.4.5"
+  }
+}
